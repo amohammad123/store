@@ -4,3 +4,7 @@ db.sqlite3
 templates
 static
 .idea
+*/__pycache__/
+__pycache__/
+.env
+media
