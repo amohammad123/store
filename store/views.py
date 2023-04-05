@@ -1,9 +1,8 @@
-import requests
 from django.shortcuts import render
 from store.models import Product
 from django.contrib.auth.models import User
 # from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
-from .Serializer import ProductSerializer,UserSerializer
+from .serializer import ProductSerializer,UserSerializer
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.views import APIView
