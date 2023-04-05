@@ -1,7 +1,5 @@
 from django.db import models
-
-import ACOUNT.models
-from ACOUNT.models import *
+from account.models import *
 
 
 class Aboutus(models.Model):
@@ -43,7 +41,7 @@ class Ticket(models.Model):  # ticket title
 
     # is admin
     def __str__(self):
-        # return "{} title:{}".format(ACOUNT.models.Profile.__str__(), self.title)
+        # return "{} title:{}".format(account.models.Profile.__str__(), self.title)
         return self.profile.__str__()
 
 

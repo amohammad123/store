@@ -1,5 +1,5 @@
 from django import forms
-from BASE.models import *
+from base.models import *
 
 class Search(forms.Form):
     searchtext = forms.CharField(max_length=100, label='', required=False)

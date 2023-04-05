@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from BASE.models import *
-from ACOUNT.models import *
+from base.models import *
+from account.models import *
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from BASE.forms import *
+from base.forms import *
 
 
 def aboutusViwe(request):
@@ -26,7 +26,7 @@ def aboutusViwe(request):
     # </html>
     #
     # """ .format('\n'.join('<li>{}<li>'.format(about) for about in aboutus))
-    return render(request, "BASE/aboutus.html", contex)
+    return render(request, "base/aboutus.html", contex)
 
 
 def homepageViwe(request):
@@ -44,7 +44,7 @@ def homepageViwe(request):
         "searchform": searchform
     }
 
-    return render(request, "BASE/homepage.html", contex)
+    return render(request, "base/homepage.html", contex)
 
 
 
@@ -58,16 +58,16 @@ def ticketViwe(request):
             "ticketlist": ticket,
         }
 
-        return render(request, "BASE/ticket.html", contex)
+        return render(request, "base/ticket.html", contex)
     # else:
-    #     return HttpResponseRedirect(reverse(ACOUNT.views.loginView))
+    #     return HttpResponseRedirect(reverse(account.views.loginView))
 
 def profileViwe(request, user_id):
     user = Profile.objects.get(pk=user_id)
     contex = {
         "userlist": user
     }
-    return render(request, "BASE/user.html", contex)
+    return render(request, "base/user.html", contex)
 
 
 def contactusViwe(request):
@@ -76,7 +76,7 @@ def contactusViwe(request):
         "contactuslist": contactus,
     }
 
-    return render(request, "BASE/contactus.html", contex)
+    return render(request, "base/contactus.html", contex)
 
 def ticketeditViwe(request):
     # ticketform = TicketEd(request.GET)
@@ -91,4 +91,4 @@ def ticketeditViwe(request):
         "sendticket": sendticket,
     }
 
-    return render(request, "BASE/ticketedit.html", contex)
+    return render(request, "base/ticketedit.html", contex)

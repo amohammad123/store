@@ -1,5 +1,5 @@
 from django import forms
-from ACOUNT.models import *
+from account.models import *
 from django.contrib.auth.forms import UserChangeForm
 
 

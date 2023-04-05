@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from BASE.models import HomeSetting
-from BASE.models import Aboutus
-from BASE.models import Contactus
-from BASE.models import Ticket
-from BASE.models import Images
-from BASE.models import Socialmedia
+from base.models import HomeSetting
+from base.models import Aboutus
+from base.models import Contactus
+from base.models import Ticket
+from base.models import Images
+from base.models import Socialmedia
 
 
 admin.site.register(HomeSetting)

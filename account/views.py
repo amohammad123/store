@@ -4,17 +4,39 @@ from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.response import Response
 from rest_framework.views import APIView
-import BASE.views
+import base.views
 import basic_section.settings
 from django.http import HttpResponse, HttpResponseRedirect
-from BASE import views
+from base import views
 from django.urls import reverse
-from ACOUNT.models import *
+from account.models import *
 from django.contrib.auth.decorators import login_required
-from ACOUNT.forms import *
+from account.forms import *
 from .serializers import *
+from django.db import IntegrityError
 from rest_framework.authtoken.models import Token
 
+class AutheView(APIView):
+  def post(self, req):
+    try:
+      user = User.objects.create_user(**req.data)
+      user = UserSerializer(user).data
+
+      return Response(user, status=status.HTTP_201_CREATED)
+    except IntegrityError:
+      return Response({"error":"username already exists"}, status=status.HTTP_409_CONFLICT)
+    except Exception as err:
+      return Response({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
+
+  def put(self, req):
+    if req.user and req.user.is_authenticated:
+      User.objects.filter(id=req.user.id).update(**req.data)
+      user = User.objects.get(id=req.user.id)
+      user = UserSerializer(user).data
+        
+      return Response(user, status=status.HTTP_200_OK)
+    else:
+      return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 class Login(APIView):
     def get(self, request):
@@ -36,7 +58,7 @@ class Login(APIView):
                 'username': username,
                 'errorMessege': "کاربری با این مشخصات یافت نشد"
             }
-            return render(request, 'ACOUNT/login.html', data)
+            return render(request, 'account/login.html', data)
             # return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request):
@@ -44,7 +66,7 @@ class Login(APIView):
 
 def logoutView(request):
     logout(request)
-    return HttpResponseRedirect(reverse(BASE.views.homepageViwe))
+    return HttpResponseRedirect(reverse(base.views.homepageViwe))
 
 
 @login_required()
@@ -55,7 +77,7 @@ def ProfileView(request):
         "profilelist": profile
     }
 
-    return render(request, 'ACOUNT/profile.html', context)
+    return render(request, 'account/profile.html', context)
 
 
 def profileRegisterViwe(request):
@@ -73,14 +95,14 @@ def profileRegisterViwe(request):
                                    bornDate=profileRegister.cleaned_data['bornDate'],
                                    credit=profileRegister.cleaned_data['credit'])
             profileModel.save()
-            return HttpResponseRedirect(reverse(BASE.views.homepageViwe))
+            return HttpResponseRedirect(reverse(base.views.homepageViwe))
     else:
         profileRegister = ProfileRegister()
 
     context = {
         "formData": profileRegister
     }
-    return render(request, 'ACOUNT/profileregister.html', context)
+    return render(request, 'account/profileregister.html', context)
 
 
 def profileEditViwe(request):
@@ -100,4 +122,4 @@ def profileEditViwe(request):
         "userEdit": usetEdit,
         'profileImage': request.user.profile.profileImage
     }
-    return render(request, 'ACOUNT/profileedit.html', context)
+    return render(request, 'account/profileedit.html', context)
