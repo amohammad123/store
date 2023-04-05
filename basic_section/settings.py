@@ -37,9 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'base.apps.BaseConfig',
     'account.apps.AccountConfig',
-    'blog.apps.BlogConfig',
     'rest_framework',
     'rest_framework.authtoken',
+    'blog.apps.BlogConfig',
+    'store.apps.StoreConfig'
 ]
 
 REST_FRAMEWORK = {

@@ -7,7 +7,7 @@ class Profile(models.Model):
         verbose_name = "کاربر"
         verbose_name_plural = "کاربران"
 
-    User = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="کاربری", related_name='profile')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="کاربری", related_name='profile')
     # Name = models.CharField(max_length=100, verbose_name="نام")
     # Family = models.CharField(max_length=100, null=True, verbose_name="نام خانوادگی")
     # Email = models.EmailField(max_length=100, verbose_name="ایمیل")

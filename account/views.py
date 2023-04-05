@@ -37,27 +37,27 @@ class AutheView(APIView):
       return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 class Login(APIView):
-    def get(self, request):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        serializer = UserSerializer(data=user)
-        data = {}
-        if user is not None:
-            login(request, user)
-            userserializer = serializer.save()
-            data['message'] = 'login secsessfully!'
-            data['token'] = Token.objects.get(user=userserializer).key
-            if request.GET.get('next'):
-                return HttpResponseRedirect(request.GET.get('next'))
-            return Response(data, status=status.HTTP_200_OK)
-        else:
-            data = {
-                'username': username,
-                'errorMessege': "کاربری با این مشخصات یافت نشد"
-            }
-            return render(request, 'account/login.html', data)
-            # return Response(data, status=status.HTTP_400_BAD_REQUEST)
+    # def get(self, request):
+    #     username = request.POST.get('username')
+    #     password = request.POST.get('password')
+    #     user = authenticate(request, username=username, password=password)
+    #     serializer = UserSerializer(data=user)
+    #     data = {}
+    #     if user is not None:
+    #         login(request, user)
+    #         userserializer = serializer.save()
+    #         data['message'] = 'login secsessfully!'
+    #         data['token'] = Token.objects.get(user=userserializer).key
+    #         if request.GET.get('next'):
+    #             return HttpResponseRedirect(request.GET.get('next'))
+    #         return Response(data, status=status.HTTP_200_OK)
+    #     else:
+    #         data = {
+    #             'username': username,
+    #             'errorMessege': "کاربری با این مشخصات یافت نشد"
+    #         }
+    #         return render(request, 'account/login.html', data)
+    #         # return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
     @login_required()
     def ProfileView(request):
