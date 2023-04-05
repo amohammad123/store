@@ -2,7 +2,7 @@ from .models import *
 from .serializers import *
 from django.db import transaction
 from django.shortcuts import render
-from ..basic_section.authenticate import Authenticate
+from basic_section.authenticate import Authenticate
 from rest_framework.views import APIView, Response, status
 from rest_framework.parsers import MultiPartParser, FormParser
 

@@ -5,9 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import base.views
-import basic_section.settings
 from django.http import HttpResponse, HttpResponseRedirect
-from base import views
 from django.urls import reverse
 from account.models import *
 from django.contrib.auth.decorators import login_required
@@ -61,65 +59,57 @@ class Login(APIView):
             return render(request, 'account/login.html', data)
             # return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request):
+    @login_required()
+    def ProfileView(request):
+        profile = request.user.profile
+
+        context = {
+            "profilelist": profile
+        }
+
+        return render(request, 'account/profile.html', context)
 
 
-def logoutView(request):
-    logout(request)
-    return HttpResponseRedirect(reverse(base.views.homepageViwe))
+    def profileRegisterViwe(request):
+        if request.method == "POST":
+            profileRegister = ProfileRegister(request.POST, request.FILES)
+            if profileRegister.is_valid():
+                user = User.objects.create_user(username=profileRegister.cleaned_data['username'],
+                                                email=profileRegister.cleaned_data['email'],
+                                                password=profileRegister.cleaned_data['password'],
+                                                first_name=profileRegister.cleaned_data['first_name'],
+                                                last_name=profileRegister.cleaned_data['last_name'])
+                user.save()
+                profileModel = Profile(user=user, profileImage=profileRegister.cleaned_data['profileImage'],
+                                    gender=profileRegister.clened_data['gender'],
+                                    bornDate=profileRegister.cleaned_data['bornDate'],
+                                    credit=profileRegister.cleaned_data['credit'])
+                profileModel.save()
+                return HttpResponseRedirect(reverse(base.views.homepageViwe))
+        else:
+            profileRegister = ProfileRegister()
+
+        context = {
+            "formData": profileRegister
+        }
+        return render(request, 'account/profileregister.html', context)
 
 
-@login_required()
-def ProfileView(request):
-    profile = request.user.profile
+    def profileEditViwe(request):
+        if request.method == 'POST':
+            profileEdit = ProfileEdit(request.POST, request.FILES, instance=request.user.profile)
+            usetEdit = UserEdit(request.POST, instance=request.user)
+            if profileEdit.is_valid() and usetEdit.is_valid():
+                profileEdit.save()
+                usetEdit.save()
+                return HttpResponseRedirect(reverse(ProfileView))
+        else:
+            profileEdit = ProfileEdit(instance=request.user.profile)
+            usetEdit = UserEdit(instance=request.user)
 
-    context = {
-        "profilelist": profile
-    }
-
-    return render(request, 'account/profile.html', context)
-
-
-def profileRegisterViwe(request):
-    if request.method == "POST":
-        profileRegister = ProfileRegister(request.POST, request.FILES)
-        if profileRegister.is_valid():
-            user = User.objects.create_user(username=profileRegister.cleaned_data['username'],
-                                            email=profileRegister.cleaned_data['email'],
-                                            password=profileRegister.cleaned_data['password'],
-                                            first_name=profileRegister.cleaned_data['first_name'],
-                                            last_name=profileRegister.cleaned_data['last_name'])
-            user.save()
-            profileModel = Profile(user=user, profileImage=profileRegister.cleaned_data['profileImage'],
-                                   gender=profileRegister.clened_data['gender'],
-                                   bornDate=profileRegister.cleaned_data['bornDate'],
-                                   credit=profileRegister.cleaned_data['credit'])
-            profileModel.save()
-            return HttpResponseRedirect(reverse(base.views.homepageViwe))
-    else:
-        profileRegister = ProfileRegister()
-
-    context = {
-        "formData": profileRegister
-    }
-    return render(request, 'account/profileregister.html', context)
-
-
-def profileEditViwe(request):
-    if request.method == 'POST':
-        profileEdit = ProfileEdit(request.POST, request.FILES, instance=request.user.profile)
-        usetEdit = UserEdit(request.POST, instance=request.user)
-        if profileEdit.is_valid() and usetEdit.is_valid():
-            profileEdit.save()
-            usetEdit.save()
-            return HttpResponseRedirect(reverse(ProfileView))
-    else:
-        profileEdit = ProfileEdit(instance=request.user.profile)
-        usetEdit = UserEdit(instance=request.user)
-
-    context = {
-        "profileEdit": profileEdit,
-        "userEdit": usetEdit,
-        'profileImage': request.user.profile.profileImage
-    }
-    return render(request, 'account/profileedit.html', context)
+        context = {
+            "profileEdit": profileEdit,
+            "userEdit": usetEdit,
+            'profileImage': request.user.profile.profileImage
+        }
+        return render(request, 'account/profileedit.html', context)

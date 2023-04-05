@@ -10,10 +10,10 @@ urlpatterns = [
     path('register/', AutheView.as_view()),
     path('account/', AutheView.as_view()),
     path('login/', Login.as_view()),
-    path('logout/', logoutView),
-    path('profile/', ProfileView),
-    path('signin/', profileRegisterViwe),
-    path('editprofile/', profileEditViwe)
+    # path('logout/', logoutView),
+    # path('profile/', ProfileView),
+    # path('signin/', profileRegisterViwe),
+    # path('editprofile/', profileEditViwe)
 
 ]
 
