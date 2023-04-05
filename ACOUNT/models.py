@@ -1,5 +1,4 @@
 from django.db import models
-from jalali_date import *
 from django.contrib.auth.models import User
 
 
@@ -25,6 +24,3 @@ class Profile(models.Model):
 
     def __str__(self):
         return "نام کاربر:  {} {} ".format(self.User.first_name, self.User.last_name)
-
-    def get_jalali_date(self):
-        return datetime2jalali(self.BornDate)

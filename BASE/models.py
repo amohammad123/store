@@ -1,6 +1,4 @@
-import self
 from django.db import models
-from jalali_date import *
 
 import ACOUNT.models
 from ACOUNT.models import *
