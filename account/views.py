@@ -14,28 +14,39 @@ from .serializers import *
 from django.db import IntegrityError
 from rest_framework.authtoken.models import Token
 
+
 class AutheView(APIView):
-  def post(self, req):
-    try:
-      user = User.objects.create_user(**req.data)
-      user = UserSerializer(user).data
+    @login_required()
+    def get(self, request, id):
 
-      return Response(user, status=status.HTTP_201_CREATED)
-    except IntegrityError:
-      return Response({"error":"username already exists"}, status=status.HTTP_409_CONFLICT)
-    except Exception as err:
-      return Response({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
+        user = Profile.objects.get(pk= id)
+        user_serializer = UserSerializer(user).data
 
-  def put(self, req):
-    if req.user and req.user.is_authenticated:
-      User.objects.filter(id=req.user.id).update(**req.data)
-      user = User.objects.get(id=req.user.id)
-      user = UserSerializer(user).data
-        
-      return Response(user, status=status.HTTP_200_OK)
-    else:
-      return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return Response(user_serializer, status=status.HTTP_200_OK)
 
+    def post(self, req):
+        try:
+            user = User.objects.create_user(**req.data)
+            user = UserSerializer(user).data
+
+            return Response(user, status=status.HTTP_201_CREATED)
+        except IntegrityError:
+            return Response({"error": "username already exists"}, status=status.HTTP_409_CONFLICT)
+        except Exception as err:
+            return Response({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, req):
+        if req.user and req.user.is_authenticated:
+            User.objects.filter(id=req.user.id).update(**req.data)
+            user = User.objects.get(id=req.user.id)
+            user = UserSerializer(user).data
+
+            return Response(user, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+    def delete(self, user_id):
+        pass
 class Login(APIView):
     # def get(self, request):
     #     username = request.POST.get('username')
@@ -69,7 +80,6 @@ class Login(APIView):
 
         return render(request, 'account/profile.html', context)
 
-
     def profileRegisterViwe(request):
         if request.method == "POST":
             profileRegister = ProfileRegister(request.POST, request.FILES)
@@ -81,9 +91,9 @@ class Login(APIView):
                                                 last_name=profileRegister.cleaned_data['last_name'])
                 user.save()
                 profileModel = Profile(user=user, profileImage=profileRegister.cleaned_data['profileImage'],
-                                    gender=profileRegister.clened_data['gender'],
-                                    bornDate=profileRegister.cleaned_data['bornDate'],
-                                    credit=profileRegister.cleaned_data['credit'])
+                                       gender=profileRegister.clened_data['gender'],
+                                       bornDate=profileRegister.cleaned_data['bornDate'],
+                                       credit=profileRegister.cleaned_data['credit'])
                 profileModel.save()
                 return HttpResponseRedirect(reverse(base.views.homepageViwe))
         else:
@@ -93,7 +103,6 @@ class Login(APIView):
             "formData": profileRegister
         }
         return render(request, 'account/profileregister.html', context)
-
 
     def profileEditViwe(request):
         if request.method == 'POST':
