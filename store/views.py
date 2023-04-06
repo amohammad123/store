@@ -1,32 +1,20 @@
 from django.shortcuts import render
 from store.models import Product
-from django.contrib.auth.models import User
-# from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
-from .serializer import ProductSerializer,UserSerializer
-from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAdminUser
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from store.serializer import ProductSerializer
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 
 class ProductList(ListCreateAPIView):
+    model = Product
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+
 class ProductDetail(RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer.data
-    lookup_field = "slug"
+    serializer_class = ProductSerializer
+    lookup_field = "id"
 
-class UserList(ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (IsAdminUser,)
-
-class UserDetail(RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (IsAdminUser,)
 
 
 
