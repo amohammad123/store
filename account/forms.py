@@ -12,12 +12,12 @@ class ProfileRegister(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['profileImage', 'gender', 'bornDate', 'credit']
+        fields = ['profile_image', 'gender', 'born_date', 'credit']
 
 class ProfileEdit(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['profileImage', 'gender', 'bornDate', 'credit']
+        fields = ['profile_image', 'gender', 'born_date', 'credit']
 
 class UserEdit(UserChangeForm):
     class Meta(UserChangeForm.Meta):

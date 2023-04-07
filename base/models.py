@@ -4,6 +4,7 @@ from account.models import *
 
 class Aboutus(models.Model):
     class Meta:
+        db_table = 'aboutus'
         verbose_name = "درباره ما"
         verbose_name_plural = "درباره ما"
 
@@ -17,6 +18,7 @@ class Aboutus(models.Model):
 
 class Contactus(models.Model):
     class Meta:
+        db_table = 'contactus'
         verbose_name = "ارتباط با ما"
         verbose_name_plural = "ارتباط با ما"
 
@@ -31,6 +33,7 @@ class Contactus(models.Model):
 
 class Ticket(models.Model):  # ticket title
     class Meta:
+        db_table = 'tickets'
         verbose_name = "تیکت"
         verbose_name_plural = "تیکت"
 
@@ -47,6 +50,7 @@ class Ticket(models.Model):  # ticket title
 
 class Images(models.Model):
     class Meta:
+        db_table = 'base_images'
         verbose_name = "تصاویر"
         verbose_name_plural = "تصاویر"
 
@@ -68,6 +72,7 @@ class Images(models.Model):
 
 class Socialmedia(models.Model):
     class Meta:
+        db_table = 'socialmedias'
         verbose_name = "رسانه"
         verbose_name_plural = "رسانه"
 
@@ -80,17 +85,18 @@ class Socialmedia(models.Model):
 
 class HomeSetting(models.Model):
     class Meta:
+        db_table = 'home_settings'
         verbose_name = "صفحه اصلی"
         verbose_name_plural = "صفحه اصلی"
 
-    slogen = models.CharField(max_length=300, verbose_name="شعار")
+    slogan = models.CharField(max_length=300, verbose_name="شعار")
     superiority = models.TextField(null=True, blank=True, verbose_name="برتری")
     image = models.OneToOneField(Images, on_delete=models.PROTECT, verbose_name="تصاویر", related_name="photos",
                                  null=True, blank=True)
     aboutus = models.OneToOneField(Aboutus, on_delete=models.PROTECT, verbose_name="درباره ما")
     socialmedia = models.ManyToManyField(Socialmedia, verbose_name="شبکه های اجتماعی")
     sllider = models.ManyToManyField(Images, verbose_name="اسلایدر")
-    Logo = models.ForeignKey(Images, verbose_name="عکس لوگو", on_delete=models.PROTECT, related_name="logo",
+    logo = models.ForeignKey(Images, verbose_name="عکس لوگو", on_delete=models.PROTECT, related_name="logo",
                              null=True)
 
     def __str__(self):

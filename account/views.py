@@ -90,9 +90,9 @@ class Login(APIView):
                                                 first_name=profileRegister.cleaned_data['first_name'],
                                                 last_name=profileRegister.cleaned_data['last_name'])
                 user.save()
-                profileModel = Profile(user=user, profileImage=profileRegister.cleaned_data['profileImage'],
+                profileModel = Profile(user=user, profile_image=profileRegister.cleaned_data['profile_image'],
                                        gender=profileRegister.clened_data['gender'],
-                                       bornDate=profileRegister.cleaned_data['bornDate'],
+                                       born_date=profileRegister.cleaned_data['born_date'],
                                        credit=profileRegister.cleaned_data['credit'])
                 profileModel.save()
                 return HttpResponseRedirect(reverse(base.views.homepageViwe))
@@ -119,6 +119,6 @@ class Login(APIView):
         context = {
             "profileEdit": profileEdit,
             "userEdit": usetEdit,
-            'profileImage': request.user.profile.profileImage
+            'profile_image': request.user.profile.profile_image
         }
         return render(request, 'account/profileedit.html', context)
