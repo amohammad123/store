@@ -1,7 +1,5 @@
 from django.shortcuts import render
 from rest_framework import status
-from rest_framework.decorators import api_view
-from django.contrib.auth import authenticate, login, logout
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import base.views
@@ -10,9 +8,8 @@ from django.urls import reverse
 from account.models import *
 from django.contrib.auth.decorators import login_required
 from account.forms import *
-from .serializers import *
+from account.serializers import *
 from django.db import IntegrityError
-from rest_framework.authtoken.models import Token
 
 
 class AutheView(APIView):
