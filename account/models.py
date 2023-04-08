@@ -14,7 +14,7 @@ class Profile(models.Model):
     # Email = models.EmailField(max_length=100, verbose_name="ایمیل")
 
     phone = models.CharField(max_length=11, verbose_name="شماره همراه")
-    profile_image = models.ImageField(upload_to="account/images", null=True, verbose_name="عکس پروفایل")
+    profile_image = models.ImageField(upload_to="account/images", null=True, blank=True, verbose_name="عکس پروفایل")
     men = 1
     women = 2
     noidea = 3
@@ -24,4 +24,4 @@ class Profile(models.Model):
     credit = models.IntegerField(verbose_name="اعتبار", default=0)
 
     def __str__(self):
-        return "نام کاربر:  {} {} ".format(self.User.first_name, self.User.last_name)
+        return "id: {} ".format(self.user.id)
