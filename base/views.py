@@ -5,6 +5,20 @@ from account.models import *
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from base.forms import *
+from .serializers import *
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+
+class HomePage(APIView):
+    def get(self, request):
+        homepage = HomeSetting.objects.all()
+        homepage = HomeSerializer(homepage).data
+        return Response(homepage, status=status.HTTP_200_OK)
+
+    def post(self):
+        pass
 
 
 def aboutusViwe(request):
@@ -30,7 +44,6 @@ def aboutusViwe(request):
 
 
 def homepageViwe(request):
-
     searchform = Search(request.GET)
     if searchform.is_valid():
         searchtext = searchform.cleaned_data["searchtext"]
@@ -47,20 +60,19 @@ def homepageViwe(request):
     return render(request, "base/homepage.html", contex)
 
 
-
-
-
 @login_required()
 def ticketViwe(request):
     # if request.user.is_staff and request.user.is_active:
-        ticket = Ticket.objects.all()
-        contex = {
-            "ticketlist": ticket,
-        }
+    ticket = Ticket.objects.all()
+    contex = {
+        "ticketlist": ticket,
+    }
 
-        return render(request, "base/ticket.html", contex)
-    # else:
-    #     return HttpResponseRedirect(reverse(account.views.loginView))
+    return render(request, "base/ticket.html", contex)
+
+
+# else:
+#     return HttpResponseRedirect(reverse(account.views.loginView))
 
 def profileViwe(request, user_id):
     user = Profile.objects.get(pk=user_id)
@@ -77,6 +89,7 @@ def contactusViwe(request):
     }
 
     return render(request, "base/contactus.html", contex)
+
 
 def ticketeditViwe(request):
     # ticketform = TicketEd(request.GET)
