@@ -37,7 +37,7 @@ class AutheView(APIView):
         try:
             user = User.objects.create_user(username=request.data["username"], password=request.data["password"])
             profileModel = Profile.objects.create(user_id=user.id)
-            user = UserSerializer(profileModel).data
+            user = UserSerializer(user).data
 
             return Response(user, status=status.HTTP_201_CREATED)
         except IntegrityError:

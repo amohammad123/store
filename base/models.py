@@ -91,11 +91,11 @@ class HomeSetting(models.Model):
     superiority = models.TextField(null=True, blank=True, verbose_name="برتری")
     image = models.OneToOneField(Images, on_delete=models.PROTECT, verbose_name="تصاویر", related_name="photos",
                                  null=True, blank=True)
-    aboutus = models.OneToOneField(Aboutus, on_delete=models.PROTECT, verbose_name="درباره ما")
-    socialmedia = models.ManyToManyField(Socialmedia, verbose_name="شبکه های اجتماعی")
-    sllider = models.ManyToManyField(Images, verbose_name="اسلایدر")
+    aboutus = models.OneToOneField(Aboutus, on_delete=models.PROTECT, verbose_name="درباره ما", null=True, blank=True)
+    socialmedia = models.ManyToManyField(Socialmedia, verbose_name="شبکه های اجتماعی", null=True, blank=True)
+    sllider = models.ManyToManyField(Images, verbose_name="اسلایدر", null=True, blank=True)
     logo = models.ForeignKey(Images, verbose_name="عکس لوگو", on_delete=models.PROTECT, related_name="logo",
-                             null=True)
+                             null=True, blank=True)
 
     class Meta:
         db_table = 'home_settings'
