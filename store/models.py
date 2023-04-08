@@ -1,5 +1,4 @@
 from django.db import models
-from blog.models import Image
 from django.contrib.auth.models import User
 
 # todo custom user for extera data and login control
@@ -22,7 +21,6 @@ class Product(models.Model):
     slug = models.SlugField(max_length=250, unique=True)
     description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
-    image = models.ForeignKey(Image, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -142,3 +140,14 @@ class Payment(models.Model):
 
     def __str__(self):
         return self.amount
+    
+
+class Image(models.Model):
+  image = models.ImageField(upload_to='blog/images')
+  product = models.ForeignKey(Product, db_column='product_id', on_delete=models.CASCADE)
+
+  class Meta:
+    db_table = 'product_images'
+
+  def __str__(self):
+    return self.image

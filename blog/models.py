@@ -4,22 +4,11 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
-class Image(models.Model):
-  image = models.ImageField(upload_to='blog/images')
-  # post = models.ForeignKey(Post, db_column='post_id', on_delete=models.CASCADE)
-
-  class Meta:
-    db_table = 'images'
-
-  def __str__(self):
-    return self.image
-
 class Post(models.Model):
   title = models.CharField(max_length=255)
   content = models.TextField()
   subject = models.CharField(max_length=255)
   author = models.ForeignKey(User, on_delete=models.CASCADE)
-  image = models.ForeignKey(Image, on_delete=models.PROTECT)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
@@ -54,3 +43,14 @@ class PostLike(models.Model):
   class Meta:
     db_table = 'post_likes'
     unique_together = ('user_id', 'post_id')
+
+
+class Image(models.Model):
+  image = models.ImageField(upload_to='blog/images')
+  post = models.ForeignKey(Post, db_column='post_id', on_delete=models.CASCADE)
+
+  class Meta:
+    db_table = 'blog_images'
+
+  def __str__(self):
+    return self.image
