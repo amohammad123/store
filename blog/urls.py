@@ -2,7 +2,6 @@ from django.urls import path
 from blog import views as blog_view
 from django.conf.urls.static import static
 from app.settings import DEBUG, MEDIA_ROOT, MEDIA_URL
-from app.settings import DEBUG, MEDIA_ROOT, MEDIA_URL
 
 
 urlpatterns = [
