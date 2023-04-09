@@ -12,12 +12,12 @@ class PostView(APIView):
   parser_classes = (MultiPartParser, FormParser)
 
 
-  def get(self, req):
-    page = 1 if 'page' not in req.GET else int(req.GET['page'])
-    size = 20 if 'size' not in req.GET else int(req.GET['size'])
+  def get(self, request):
+    page = 1 if 'page' not in request.GET else int(request.GET['page'])
+    size = 20 if 'size' not in request.GET else int(request.GET['size'])
     if size > 50: size = 50
 
-    posts = Post.objects.filter(author_id=req.user.id)
+    posts = Post.objects.filter(author_id=request.user.id)
     serialized_posts = PostSerializer(posts, many=True).data
     
     posts = []
@@ -37,16 +37,16 @@ class PostView(APIView):
     return Response(posts, status=status.HTTP_200_OK)
 
 
-  def post(self, req):
-    if 'image' in req.data:
-      image = req.data['image']
-      del req.data['image']
+  def post(self, request):
+    if 'image' in request.data:
+      image = request.data['image']
+      del request.data['image']
     
-      data = { key: req.data[key] for key in req.data }
+      data = { key: request.data[key] for key in request.data }
 
       try:
         with transaction.atomic():
-          post = Post.objects.create(author_id=req.user.id , **data)
+          post = Post.objects.create(author_id=request.user.id , **data)
           post = PostSerializer(post).data
           image_serializer = ImageSerializer(data={"image": image, "post": post['id']})
           if image_serializer.is_valid():
@@ -59,15 +59,15 @@ class PostView(APIView):
       except Exception as err:
         return Response({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
     else:
-      post = Post.objects.create(author_id=req.user.id , **data)
+      post = Post.objects.create(author_id=request.user.id , **data)
       post = PostSerializer(post).data
       return Response(post, status=status.HTTP_201_CREATED)
     
 
-  def put(self, req, post_id=None):
+  def put(self, request, post_id=None):
     if post_id is not None:
       try:
-        Post.objects.filter(id=post_id).update(**req.data)
+        Post.objects.filter(id=post_id).update(**request.data)
 
         post = Post.objects.get(id=post_id)
         post = PostSerializer(post).data
@@ -81,7 +81,7 @@ class PostView(APIView):
       return Response(status=status.HTTP_400_BAD_REQUEST)
     
   
-  def delete(self, req, post_id):
+  def delete(self, request, post_id):
     if post_id is not None:
       try:
         Post.objects.get(id=post_id).delete()
@@ -96,9 +96,9 @@ class PostView(APIView):
 class CommentView(APIView):
   permission_classes = (Authenticate,)
 
-  def get(self, req, post_id=None):
-    page = 1 if 'page' not in req.GET else int(req.GET['page'])
-    size = 20 if 'size' not in req.GET else int(req.GET['size'])
+  def get(self, request, post_id=None):
+    page = 1 if 'page' not in request.GET else int(request.GET['page'])
+    size = 20 if 'size' not in request.GET else int(request.GET['size'])
     if size > 50: size = 50
 
     try:
@@ -115,16 +115,16 @@ class CommentView(APIView):
     except Exception as err:
       return Response({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
   
-  def post(self, req, post_id=None):
-    comment = Comment.objects.create(user_id= req.user.id, post_id=post_id , **req.data)
+  def post(self, request, post_id=None):
+    comment = Comment.objects.create(user_id= request.user.id, post_id=post_id , **request.data)
     comment = CommentSerializer(comment).data
 
     return Response(comment, status=status.HTTP_201_CREATED)
   
-  def put(self, req, comment_id=None):
+  def put(self, request, comment_id=None):
     if comment_id is not None:
       try:
-        Comment.objects.filter(id=comment_id).update(**req.data)
+        Comment.objects.filter(id=comment_id).update(**request.data)
 
         comment = Comment.objects.get(id=comment_id)
         comment = CommentSerializer(comment).data
@@ -137,10 +137,10 @@ class CommentView(APIView):
     else:
       return Response(status=status.HTTP_400_BAD_REQUEST)
   
-  def delete(self, req, comment_id):
+  def delete(self, request, comment_id):
     if comment_id is not None:
       try:
-        Comment.objects.get(id=comment_id, user_id=req.user.id).delete()
+        Comment.objects.get(id=comment_id, user_id=request.user.id).delete()
         return Response(status=status.HTTP_200_OK)
       except Comment.DoesNotExist:
         return Response({'error': 'comment not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -151,8 +151,8 @@ class CommentView(APIView):
     
 
 class PostLikeView(APIView):
-  def post(self, req, post_id):
-    user_id = req.user.id
+  def post(self, request, post_id):
+    user_id = request.user.id
     post_like = PostLike.objects.filter(post_id=post_id, user_id=user_id).exists()
     if post_like:
       PostLike.objects.get(post_id=post_id, user_id=user_id).delete()
