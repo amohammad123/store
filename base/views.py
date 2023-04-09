@@ -9,6 +9,8 @@ from .serializers import *
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAdminUser
+from .signals import *
 
 
 class HomePage(APIView):
@@ -18,9 +20,19 @@ class HomePage(APIView):
         return Response(homepage, status=status.HTTP_200_OK)
 
     def post(self, request):
+        # permission_classes = (IsAdminUser,)
         homepage = HomeSetting.objects.create(slogan=request.data["slogan"], superiority=request.data["superiority"])
         homepage = HomeSerializer(homepage).data
         return Response(homepage, status=status.HTTP_201_CREATED)
+
+
+
+
+
+
+
+
+
 # {
 #     "slogan":"تست شعار 2",
 #     "superiority":"تست برتری 2"

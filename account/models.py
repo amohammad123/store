@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 class Profile(models.Model):
@@ -24,4 +25,8 @@ class Profile(models.Model):
     credit = models.IntegerField(verbose_name="اعتبار", default=0)
 
     def __str__(self):
-        return "id: {} ".format(self.user.id)
+        return "id: {}, username: {} ".format(self.user.id, self.user.username)
+
+    #dynamic url:
+    # def get_absolut_url(self):
+    #     return reverse("profile", args=self.user)
