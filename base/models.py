@@ -13,7 +13,7 @@ class Aboutus(models.Model):
         verbose_name_plural = "درباره ما"
 
     def __str__(self):
-        return 'شماره {}'.format(self.id)
+        return '{}'.format(HomeSetting.__str__(self))
 
 
 class Contactus(models.Model):
@@ -70,7 +70,7 @@ class Images(models.Model):
 
 
     def __str__(self):
-        return self.title.__str__()
+        return 'title: {} , {}'.format(self.title.__str__(), HomeSetting.__str__(self))
 
 
 class Socialmedia(models.Model):
@@ -83,7 +83,7 @@ class Socialmedia(models.Model):
         verbose_name_plural = "رسانه"
 
     def __str__(self):
-        return self.name
+        return '{}'.format(HomeSetting.__str__(self))
 
 
 class HomeSetting(models.Model):
@@ -103,4 +103,4 @@ class HomeSetting(models.Model):
         verbose_name_plural = "صفحه اصلی"
 
     def __str__(self):
-        return 'شماره {}'.format(self.id)
+        return 'home page id: {}'.format(self.id)

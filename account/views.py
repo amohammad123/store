@@ -1,14 +1,24 @@
-from account.forms import *
-from account.models import *
-from account.serializers import *
-from rest_framework import status
 from django.shortcuts import render
-from django.db import IntegrityError
-from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.decorators import api_view
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.response import Response
+from rest_framework.views import APIView
+import base.views
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
+from account.models import *
+from django.contrib.auth.decorators import login_required
+from .signals import *
+
+from .serializers import *
+from django.db import IntegrityError
+from app.authenticate import Authenticate
 
 
 class AutheView(APIView):
+    # permission_classes = (Authenticate,)
+
     def get(self, request, user_id=None):
         if request.user.is_staff:
             if user_id is None:
@@ -31,7 +41,6 @@ class AutheView(APIView):
     def post(self, request):
         try:
             user = User.objects.create_user(username=request.data["username"], password=request.data["password"])
-            Profile.objects.create(user_id=user.id)
             user = UserSerializer(user).data
 
             return Response(user, status=status.HTTP_201_CREATED)
@@ -40,16 +49,12 @@ class AutheView(APIView):
         except Exception as err:
             return Response({'error': str(err)}, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request):
+    def put(self, req):
+        user = User.objects.filter(id=req.user.id).update(**req.data)
+        user = User.objects.get(id=req.user.id)
+        user = UserSerializer(user).data
 
-        if request.user and request.user.is_authenticated:
-            user = User.objects.filter(id=request.user.id).update(**request.data)
-            user = User.objects.get(id=request.user.id)
-            user = UserSerializer(user).data
-
-            return Response(user, status=status.HTTP_200_OK)
-        else:
-            return Response({"message": "access denied"}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(user, status=status.HTTP_200_OK)
 
     def delete(self, request):
         if request.user.is_staff:
