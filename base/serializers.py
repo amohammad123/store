@@ -6,3 +6,8 @@ class HomeSerializer(serializers.ModelSerializer):
     class Meta:
         model = HomeSetting
         fields = '__all__'
+
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contactus
+        fields = '__all__'

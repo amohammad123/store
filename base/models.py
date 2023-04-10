@@ -75,7 +75,7 @@ class Images(models.Model):
 
 class Socialmedia(models.Model):
     name = models.CharField(max_length=20, verbose_name="نام")
-    link = models.URLField(max_length=200, unique=True, verbose_name="لینک")
+    link = models.URLField(max_length=200, unique=False, verbose_name="لینک")
 
     class Meta:
         db_table = 'socialmedias'
