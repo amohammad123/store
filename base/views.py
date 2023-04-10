@@ -44,43 +44,43 @@ class HomePageView(APIView):
                 return Response({"massege": "please enter the correct objects"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-def put(self, request, home_id):
-    # permission_classes = (IsAdminUser,)
-    try:
+    def put(self, request, home_id):
+        # permission_classes = (IsAdminUser,)
+        try:
+            homepage = HomeSetting.objects.filter(id=home_id)
+            if homepage.exists():
+                homepage.update(**request.data)
+                homepage = HomeSetting.objects.get(id=home_id)
+                homepage = HomeSerializer(homepage).data
+                return Response(homepage, status=status.HTTP_200_OK)
+
+            else:
+                homepage = HomeSetting.objects.all()
+                homepage = HomeSerializer(homepage, many=True).data
+                data = {
+                    "massege": "id:{}, not existsed".format(home_id),
+                    "existdata": homepage
+                }
+                return Response(data, status=status.HTTP_409_CONFLICT)
+        except:
+            return Response({"massege": "please enter the correct objects"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def delete(self, request, home_id):
         homepage = HomeSetting.objects.filter(id=home_id)
-        if homepage.exists():
-            homepage.update(**request.data)
+        if homepage.count() > 0:
             homepage = HomeSetting.objects.get(id=home_id)
-            homepage = HomeSerializer(homepage).data
-            return Response(homepage, status=status.HTTP_200_OK)
+            homepage.delete()
+            return Response({"massege": "id: {}, deleted successfully".format(home_id)}, status=status.HTTP_200_OK)
 
         else:
             homepage = HomeSetting.objects.all()
             homepage = HomeSerializer(homepage, many=True).data
             data = {
-                "massege": "id:{}, not existsed".format(home_id),
+                "massege": "id:{}, was not found!".format(home_id),
                 "existdata": homepage
             }
             return Response(data, status=status.HTTP_409_CONFLICT)
-    except:
-        return Response({"massege": "please enter the correct objects"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-def delete(self, request, home_id):
-    homepage = HomeSetting.objects.filter(id=home_id)
-    if homepage.count() > 0:
-        homepage = HomeSetting.objects.get(id=home_id)
-        homepage.delete()
-        return Response({"massege": "id: {}, deleted successfully".format(home_id)}, status=status.HTTP_200_OK)
-
-    else:
-        homepage = HomeSetting.objects.all()
-        homepage = HomeSerializer(homepage, many=True).data
-        data = {
-            "massege": "id:{}, was not found!".format(home_id),
-            "existdata": homepage
-        }
-        return Response(data, status=status.HTTP_409_CONFLICT)
 
 
 class ContactusView(APIView):
