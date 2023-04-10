@@ -43,7 +43,6 @@ class HomePageView(APIView):
             except:
                 return Response({"massege": "please enter the correct objects"}, status=status.HTTP_400_BAD_REQUEST)
 
-
     def put(self, request, home_id):
         # permission_classes = (IsAdminUser,)
         try:
@@ -65,8 +64,8 @@ class HomePageView(APIView):
         except:
             return Response({"massege": "please enter the correct objects"}, status=status.HTTP_400_BAD_REQUEST)
 
-
     def delete(self, request, home_id):
+        # permission_classes = (IsAdminUser,)
         homepage = HomeSetting.objects.filter(id=home_id)
         if homepage.count() > 0:
             homepage = HomeSetting.objects.get(id=home_id)
@@ -140,6 +139,7 @@ class ContactusView(APIView):
             return Response({"massege": "please enter the correct objects"}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, contact_id):
+        # permission_classes = (IsAdminUser,)
         contact = Contactus.objects.filter(id=contact_id)
         if contact.count() > 0:
             contact = Contactus.objects.get(id=contact_id)
