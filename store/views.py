@@ -107,9 +107,39 @@ class OrderDetail(RetrieveUpdateDestroyAPIView):
         return Response(order, status=status.HTTP_200_OK)
     
 
+class PaymentVerifyCreate(ListCreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+    def create(self, request, *args, **kwargs):
+        user_id = self.request.user.id
+        order_id = request.data['id']
+        payment_id = request.data['payment_id']
+        order = get_object_or_404(Order, id=order_id, payment_id=payment_id)
+
+        result = verify_payment(order_id, payment_id)
+        print('result:', result)
+        if result['status'] == 100:
+            Order.objects.filter(id=order_id,user_id=1).update(payment_status="success")
+            Cart.objects.filter(id=order.cart_id).update(checkout=True)
+
+            return Response({'message': result['message']}, status=status.HTTP_200_OK)
+
+        else:
+            Order.objects.filter(id=order_id,user_id=1).update(payment_status="fail")
+            return Response({'message': result['message']}, status=status.HTTP_417_EXPECTATION_FAILED)
+
+
+
+
 
 def create_payment(amount, order_id):
     result = {'order_id': order_id,'amount': amount,'callback': 'http://localhost:8000/payment/verify'}
 
     return {'id': '198737313', 'link': 'http://localhost:8000/payment/verify'}
 
+def verify_payment(payment_id, order_id):
+    result = '/payment/verify', { id: payment_id, order_id:order_id }
+    
+    random_status = [{'status': 100, 'message':'پرداخت تایید شده است'}, {'status': 1, 'message':'پرداخت انجام نشده است'}]
+    return random.choice(random_status)
