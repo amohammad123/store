@@ -30,3 +30,19 @@ class Profile(models.Model):
     #dynamic url:
     # def get_absolut_url(self):
     #     return reverse("profile", args=self.user)
+
+
+class Address(models.Model):
+    user = models.ForeignKey(User, db_column='user_id', on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
+    postal_code = models.CharField(max_length=255)
+    phone =models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'addresses'
+
+    def __str__(self):
+        return self.name

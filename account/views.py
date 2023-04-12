@@ -65,3 +65,10 @@ class AutheView(APIView):
                 return Response(data, status=status.HTTP_409_CONFLICT)
         else:
             return Response({"message": "access denied"}, status=status.HTTP_400_BAD_REQUEST)
+
+class AddressView(APIView):
+    def post(self, request):
+        user_id = request.user.id
+        address = Address.objects.create(user_id=1, **request.data)
+        address = AddressSerializer(address).data
+        return Response(address, status=status.HTTP_201_CREATED)

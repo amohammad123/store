@@ -8,6 +8,7 @@ urlpatterns = [
     path('profile/<int:user_id>', AutheView.as_view(), name="profile"),
     path('register/', AutheView.as_view()),
     path('editprofile/', AutheView.as_view()),
+    path('address/', AddressView.as_view()),
     path('delete/<int:user_id>', AutheView.as_view()),
 
 ]
