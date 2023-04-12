@@ -68,3 +68,48 @@ class CartDetail(RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class OrderListCreate(ListCreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+    def filter_queryset(self, queryset):
+        queryset = queryset.filter(user_id=1)
+        return super().filter_queryset(queryset)
+
+    def create(self, request, *args, **kwargs):
+        user_id=self.request.user.id
+        cart_id = request.data['cart_id']
+
+        cart = get_object_or_404(Cart, id=cart_id, user_id=1, checkout=False)
+        address = get_object_or_404(Address, id=request.data['address_id'], user_id=1)
+        raw_query = CartProduct.objects.raw('SELECT id, SUM(price * quantity) total FROM cart_products WHERE cart_id= %s',[cart_id])[0]
+
+        request.data['total'] = raw_query.total
+        request.data['address'] = address.id
+        request.data['cart'] = cart.id
+        order_resp = super().create(request, *args, **kwargs)
+
+        result = create_payment(raw_query.total, order_resp.data.get('id'))
+
+        Order.objects.filter(id=order_resp.data.get('id'),cart_id=cart_id,).update(payment_id=result['id'])
+        
+        return Response({'link': result['link']}, status=status.HTTP_200_OK)
+
+class OrderDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    lookup_field = 'id'
+
+    def patch(self, request, *args, **kwargs):
+        user_id = self.request.user.id
+        order = Order.objects.filter(id=kwargs['id'], user_id=1).update(status=request.data['status'])
+
+        return Response(order, status=status.HTTP_200_OK)
+    
+
+
+def create_payment(amount, order_id):
+    result = {'order_id': order_id,'amount': amount,'callback': 'http://localhost:8000/payment/verify'}
+
+    return {'id': '198737313', 'link': 'http://localhost:8000/payment/verify'}
+

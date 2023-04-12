@@ -45,3 +45,10 @@ class CartSerializer(serializers.ModelSerializer):
   # def get_cart_products(self, cart):
   #   cart_products = CartProduct.objects.filter(cart_id=cart.id)
   #   return CartProductSerializer(cart_products).data if cart_products is not None else None
+
+
+class OrderSerializer(serializers.ModelSerializer):
+  
+  class Meta:
+    model = Order
+    fields = '__all__'
